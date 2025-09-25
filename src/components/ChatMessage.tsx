@@ -32,7 +32,7 @@ export const ChatMessage = ({ message, isBot = false, type = 'message', classNam
         getBubbleStyles(),
         isBot ? "rounded-tl-sm" : "rounded-tr-sm"
       )}>
-        <div className="whitespace-pre-wrap text-sm leading-relaxed">
+        <div className="whitespace-pre-wrap text-lg leading-relaxed text-blue-600">
           {message}
         </div>
       </Card>
