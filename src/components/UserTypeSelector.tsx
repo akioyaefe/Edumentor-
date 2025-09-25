@@ -41,12 +41,12 @@ export const UserTypeSelector = ({ onSelectType }: UserTypeSelectorProps) => {
             <div className="w-16 h-16 mx-auto bg-education-secondary rounded-full flex items-center justify-center">
               <Users className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-xl font-semibold">I'm a Teacher</h3>
+            <h3 className="text-xl font-semibold">I'm a Mentor</h3>
             <p className="text-muted-foreground">
               Share your experience, learn new approaches, and explore effective mentorship strategies
             </p>
             <Button className="w-full bg-education-secondary hover:bg-education-secondary/90">
-              Start as Teacher
+              Start as Mentor
             </Button>
           </div>
         </Card>
