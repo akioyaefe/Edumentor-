@@ -19,7 +19,7 @@ const Index = () => {
     setUserType(type);
     setMessages([
       {
-        content: "👋 Hello! Welcome to the *Rethinking SDG 4* Chatbot. I'm here to explore how we can build **safe, inclusive, personalized, and lifelong learning systems in Nigeria and Africa.**\n\n✨ My personal belief is that education should not just be about exams, but about lifelong growth.",
+        content: "👋 Hello! Welcome to the *Rethinking SDG 4* Chatbot. I'm here to explore how we can build **safe, inclusive, personalized, and lifelong learning system for you.**\n\n✨ My personal belief is that education should not just be about exams and  certification, but about lifelong growth. Such that you are able to measure how much you have learnt and how you can continually increase /develop it .",
         isBot: true
       }
     ]);
