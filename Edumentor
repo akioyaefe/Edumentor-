@@ -1,0 +1,41 @@
+import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+
+interface ChatMessageProps {
+  message: string;
+  isBot?: boolean;
+  type?: 'message' | 'quiz' | 'action' | 'report';
+  className?: string;
+}
+
+export const ChatMessage = ({ message, isBot = false, type = 'message', className }: ChatMessageProps) => {
+  const getBubbleStyles = () => {
+    if (isBot) {
+      switch (type) {
+        case 'quiz':
+          return "bg-education-accent text-white";
+        case 'action':
+          return "bg-education-secondary text-white";
+        case 'report':
+          return "bg-gradient-to-r from-education-primary to-education-secondary text-white";
+        default:
+          return "bg-chat-bot text-white";
+      }
+    }
+    return "bg-chat-user text-white ml-auto";
+  };
+
+  return (
+    <div className={cn("flex mb-4", isBot ? "justify-start" : "justify-end", className)}>
+      <Card className={cn(
+        "max-w-[80%] p-4 rounded-2xl shadow-sm",
+        getBubbleStyles(),
+        isBot ? "rounded-tl-sm" : "rounded-tr-sm"
+      )}>
+        <div className="whitespace-pre-wrap text-lg leading-relaxed text-blue-600">
+          {message}
+        </div>
+      </Card>
+    </div>
+  );
+};
