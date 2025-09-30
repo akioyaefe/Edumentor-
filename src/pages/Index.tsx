@@ -10,16 +10,16 @@ type ConversationStep = 'userSelect' | 'challenge' | 'quiz' | 'action' | 'crr';
 
 const Index = () => {
   const [step, setStep] = useState<ConversationStep>('userSelect');
-  const [userType, setUserType] = useState<'student' | 'teacher' | null>(null);
+  const [userType, setUserType] = useState<'student' | 'teacher' | 'parent' | null>(null);
   const [selectedChallenge, setSelectedChallenge] = useState<string>('');
   const [actionPlan, setActionPlan] = useState<string>('');
   const [messages, setMessages] = useState<Array<{content: string, isBot: boolean, type?: string}>>([]);
 
-  const handleUserTypeSelect = (type: 'student' | 'teacher') => {
+  const handleUserTypeSelect = (type: 'student' | 'teacher' | 'parent') => {
     setUserType(type);
     setMessages([
       {
-        content: "👋 Hello! Welcome to the *Rethinking SDG 4* Chatbot. I'm here to explore how we can build **safe, inclusive, personalized, and lifelong learning system for you.**\n\n✨ My personal belief is that education should not just be about exams and  certification, but about lifelong growth. Such that you are able to measure how much you have learnt and how you can continually increase /develop it .",
+        content: "👋 Hello! Welcome to the Rethinking SDG 4 Chatbot.\nI'm here to explore how we can build a safe, inclusive, personalized, and lifelong learning system for you.\n\n✨ My personal belief is that education should not just be about exams and certification, but about lifelong growth — so that you can measure how much you have learned and how you can continually increase and develop it, including how you can dualize your targets in impact and entrepreneurship.\n\n🌱 Great!\nWhat is the biggest challenge you face in your learning journey?\n\n💭 Remember, no challenge means you are failing — challenges are simply signs of where learning is still in progress.",
         isBot: true
       }
     ]);

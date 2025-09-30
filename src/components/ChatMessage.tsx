@@ -19,7 +19,7 @@ export const ChatMessage = ({ message, isBot = false, type = 'message', classNam
         case 'report':
           return "bg-gradient-to-r from-education-primary to-education-secondary text-white";
         default:
-          return "bg-chat-bot text-white";
+          return "bg-chat-bot";
       }
     }
     return "bg-chat-user text-white ml-auto";
@@ -32,7 +32,7 @@ export const ChatMessage = ({ message, isBot = false, type = 'message', classNam
         getBubbleStyles(),
         isBot ? "rounded-tl-sm" : "rounded-tr-sm"
       )}>
-        <div className="whitespace-pre-wrap text-lg leading-relaxed text-blue-600">
+        <div className={`whitespace-pre-wrap leading-relaxed ${isBot ? 'text-xl font-semibold text-chat-bot-text' : 'text-lg text-white'}`}>
           {message}
         </div>
       </Card>

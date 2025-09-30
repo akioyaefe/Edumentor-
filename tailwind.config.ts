@@ -52,11 +52,14 @@ export default {
           secondary: "hsl(var(--education-secondary))",
           accent: "hsl(var(--education-accent))",
           warm: "hsl(var(--education-warm))",
+          parent: "hsl(var(--education-parent))",
         },
         chat: {
           user: "hsl(var(--chat-user))",
           bot: "hsl(var(--chat-bot))",
+          "bot-text": "hsl(var(--chat-bot-text))",
           system: "hsl(var(--chat-system))",
+          highlight: "hsl(var(--chat-highlight))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

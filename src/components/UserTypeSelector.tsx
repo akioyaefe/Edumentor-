@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { GraduationCap, Users } from "lucide-react";
 
 interface UserTypeSelectorProps {
-  onSelectType: (type: 'student' | 'teacher') => void;
+  onSelectType: (type: 'student' | 'teacher' | 'parent') => void;
 }
 
 export const UserTypeSelector = ({ onSelectType }: UserTypeSelectorProps) => {
@@ -18,7 +18,7 @@ export const UserTypeSelector = ({ onSelectType }: UserTypeSelectorProps) => {
         </p>
       </div>
       
-      <div className="grid md:grid-cols-2 gap-6 w-full max-w-2xl">
+      <div className="grid md:grid-cols-3 gap-6 w-full max-w-4xl">
         <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-education-primary"
               onClick={() => onSelectType('student')}>
           <div className="text-center space-y-4">
@@ -47,6 +47,22 @@ export const UserTypeSelector = ({ onSelectType }: UserTypeSelectorProps) => {
             </p>
             <Button className="w-full bg-education-secondary hover:bg-education-secondary/90">
               Start as Mentor
+            </Button>
+          </div>
+        </Card>
+        
+        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-education-parent"
+              onClick={() => onSelectType('parent')}>
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 mx-auto bg-education-parent rounded-full flex items-center justify-center">
+              <Users className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold">I'm a Parent</h3>
+            <p className="text-muted-foreground">
+              Support your child's education journey and connect with mentors to ensure their growth and success
+            </p>
+            <Button className="w-full bg-education-parent hover:bg-education-parent/90">
+              Start as Parent
             </Button>
           </div>
         </Card>

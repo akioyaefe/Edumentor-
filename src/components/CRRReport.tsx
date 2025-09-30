@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, User, Target, Lightbulb } from "lucide-react";
 
 interface CRRReportProps {
-  userType: 'student' | 'teacher';
+  userType: 'student' | 'teacher' | 'parent';
   challenge: string;
   actionPlan: string;
 }
@@ -23,7 +23,7 @@ export const CRRReport = ({ userType, challenge, actionPlan }: CRRReportProps) =
             <div>
               <p className="font-semibold">Your Role:</p>
               <Badge variant="secondary" className="bg-white/20 text-white">
-                {userType === 'student' ? 'Student' : 'Teacher/Mentor'}
+                {userType === 'student' ? 'Student' : userType === 'teacher' ? 'Teacher/Mentor' : 'Parent'}
               </Badge>
             </div>
           </div>

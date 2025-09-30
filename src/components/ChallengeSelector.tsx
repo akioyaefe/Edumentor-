@@ -2,59 +2,51 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface ChallengeSelectorProps {
-  userType: 'student' | 'teacher';
+  userType: 'student' | 'teacher' | 'parent';
   onSelectChallenge: (challenge: string) => void;
 }
 
 export const ChallengeSelector = ({ userType, onSelectChallenge }: ChallengeSelectorProps) => {
-  const challenges = userType === 'student' 
+  const challengesData = userType === 'student' 
     ? [
-        'Insecurity in learning environment',
-        'Lack of qualified teachers',
-        'Boring teaching methods',
-        'Lack of mentorship',
-        'Other challenges'
+        { text: 'Insecurity in learning environment', subtitle: '(Safety concerns affecting my focus)', color: 'bg-red-500' },
+        { text: 'Lack of qualified teachers', subtitle: '(Not getting proper guidance)', color: 'bg-orange-500' },
+        { text: 'Boring teaching methods', subtitle: '(Classes feel unengaging)', color: 'bg-yellow-500' },
+        { text: 'Lack of mentorship', subtitle: '(No one to guide my path)', color: 'bg-green-500' },
+        { text: 'Other challenges', subtitle: '(Something else)', color: 'bg-blue-500' }
+      ]
+    : userType === 'teacher' 
+    ? [
+        { text: 'Large class sizes', subtitle: '(Too many students to help individually)', color: 'bg-purple-500' },
+        { text: 'Lack of training and resources', subtitle: '(Need better tools and support)', color: 'bg-pink-500' },
+        { text: 'Insecurity in schools', subtitle: '(Safety concerns for everyone)', color: 'bg-red-500' },
+        { text: 'Bureaucratic barriers', subtitle: '(Too much admin work)', color: 'bg-indigo-500' },
+        { text: 'Other challenges', subtitle: '(Something else)', color: 'bg-blue-500' }
       ]
     : [
-        'Large class sizes',
-        'Lack of training and resources',
-        'Insecurity in schools',
-        'Bureaucratic barriers',
-        'Other challenges'
+        { text: 'Finding good schools', subtitle: '(Quality education options)', color: 'bg-teal-500' },
+        { text: 'Affording education costs', subtitle: '(Financial challenges)', color: 'bg-amber-500' },
+        { text: 'School safety concerns', subtitle: '(Worried about my child)', color: 'bg-red-500' },
+        { text: 'Supporting learning at home', subtitle: '(How to help effectively)', color: 'bg-cyan-500' },
+        { text: 'Other challenges', subtitle: '(Something else)', color: 'bg-blue-500' }
       ];
 
-  const title = userType === 'student' 
-    ? "What is the biggest challenge you face in your learning journey?"
-    : "What is the biggest barrier you face in supporting students effectively?";
-
-  const subtitle = userType === 'student'
-    ? "💭 Remember, no challenge means you are failing — challenges are simply signs of where learning is still 'in progress.'"
-    : "🌍 My mindset: A teacher is not only an authority, but also a mentor and facilitator. Nigeria's future depends on mentors, not just instructors.";
-
   return (
-    <Card className="p-6 bg-chat-bot text-white">
-      <div className="space-y-4">
-        <div className="text-center space-y-2">
-          <h3 className="text-lg font-semibold">
-            {userType === 'student' ? '🌱 Great!' : '📚 Excellent!'} 
-          </h3>
-          <p className="text-sm">{title}</p>
-          <p className="text-xs opacity-80">{subtitle}</p>
-        </div>
-        
-        <div className="space-y-2">
-          {challenges.map((challenge, index) => (
-            <Button
-              key={index}
-              onClick={() => onSelectChallenge(challenge)}
-              variant="secondary"
-              className="w-full text-left justify-start bg-white/10 hover:bg-white/20 text-white border-white/20"
-            >
-              {challenge}
-            </Button>
-          ))}
-        </div>
+    <div className="space-y-4">
+      <div className="grid md:grid-cols-2 gap-4">
+        {challengesData.map((challenge, index) => (
+          <Card
+            key={index}
+            onClick={() => onSelectChallenge(challenge.text)}
+            className={`${challenge.color} hover:opacity-90 transition-all cursor-pointer p-6 text-white hover:scale-105 shadow-lg`}
+          >
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold">{challenge.text}</h3>
+              <p className="text-sm opacity-90">{challenge.subtitle}</p>
+            </div>
+          </Card>
+        ))}
       </div>
-    </Card>
+    </div>
   );
 };
