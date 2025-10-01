@@ -5,8 +5,9 @@ import { ChallengeSelector } from "@/components/ChallengeSelector";
 import { QuizComponent } from "@/components/QuizComponent";
 import { ActionPlanInput } from "@/components/ActionPlanInput";
 import { CRRReport } from "@/components/CRRReport";
+import { Button } from "@/components/ui/button";
 
-type ConversationStep = 'userSelect' | 'challenge' | 'quiz' | 'action' | 'crr';
+type ConversationStep = 'userSelect' | 'challenge' | 'action' | 'crr';
 
 const quizData: Record<string, { question: string; options: string[]; correctAnswer: number }> = {
   'Insecurity in Learning Environment': {
@@ -84,8 +85,8 @@ const quizData: Record<string, { question: string; options: string[]; correctAns
 const Index = () => {
   const [step, setStep] = useState<ConversationStep>('userSelect');
   const [userType, setUserType] = useState<'student' | 'teacher' | 'parent' | null>(null);
-  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
-  const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0);
+  const [currentChallenge, setCurrentChallenge] = useState<string | null>(null);
+  const [showQuiz, setShowQuiz] = useState<boolean>(false);
   const [actionPlan, setActionPlan] = useState<string>('');
   const [messages, setMessages] = useState<Array<{content: string, isBot: boolean, type?: string}>>([]);
 
@@ -100,39 +101,25 @@ const Index = () => {
     setStep('challenge');
   };
 
-  const handleChallengesConfirm = (challenges: string[]) => {
-    setSelectedChallenges(challenges);
+  const handleChallengeSelect = (challenge: string) => {
+    setCurrentChallenge(challenge);
+    setShowQuiz(true);
     setMessages(prev => [...prev, 
-      { content: `I selected: ${challenges.join(', ')}`, isBot: false },
+      { content: `I selected: ${challenge}`, isBot: false },
     ]);
-    setTimeout(() => {
-      setCurrentQuizIndex(0);
-      setStep('quiz');
-    }, 1000);
   };
 
   const handleQuizAnswer = (isCorrect: boolean) => {
-    const isSDGQuiz = currentQuizIndex === selectedChallenges.length;
-    
     const response = isCorrect 
-      ? isSDGQuiz 
-        ? "✅ Correct! SDG 4 is about education, while healthcare belongs to SDG 3.\n\n💡 My mindset: Education is not only about schools, but about systems that connect safety, mentorship, and lifelong growth."
-        : "✅ Correct! Well done!"
-      : isSDGQuiz
-        ? "That's not quite right, but learning is a process! SDG 4 focuses on quality education. Let's continue exploring how education connects to safety, mentorship, and lifelong growth."
-        : "❌ That's not quite right, but great effort!";
+      ? "✅ Correct! Well done!"
+      : "❌ That's not quite right, but great effort!";
     
     setMessages(prev => [...prev, { content: response, isBot: true }]);
-    
-    setTimeout(() => {
-      if (currentQuizIndex < selectedChallenges.length) {
-        // Move to next challenge quiz
-        setCurrentQuizIndex(prev => prev + 1);
-      } else {
-        // All quizzes done, move to action plan
-        setStep('action');
-      }
-    }, 2000);
+  };
+
+  const handleBackToChallenges = () => {
+    setShowQuiz(false);
+    setCurrentChallenge(null);
   };
 
   const handleActionPlanSubmit = (action: string) => {
@@ -168,42 +155,32 @@ const Index = () => {
           ))}
           
           {/* Interactive Components */}
-          {step === 'challenge' && userType && (
+          {step === 'challenge' && userType && !showQuiz && (
             <ChallengeSelector 
               userType={userType} 
-              onConfirm={handleChallengesConfirm} 
+              onSelectChallenge={handleChallengeSelect} 
             />
           )}
           
-          {step === 'quiz' && (() => {
-            const isSDGQuiz = currentQuizIndex === selectedChallenges.length;
-            
-            if (isSDGQuiz) {
-              return (
-                <QuizComponent
-                  question="SDG 4 is about education. Which of these is NOT part of SDG 4?"
-                  options={[
-                    "A) Safe schools",
-                    "B) Quality teachers", 
-                    "C) Affordable healthcare",
-                    "D) Lifelong learning"
-                  ]}
-                  correctAnswer={2}
-                  onAnswer={handleQuizAnswer}
-                />
-              );
-            }
-            
-            const currentChallenge = selectedChallenges[currentQuizIndex];
+          {step === 'challenge' && showQuiz && currentChallenge && (() => {
             const quiz = quizData[currentChallenge];
             
             return quiz ? (
-              <QuizComponent
-                question={quiz.question}
-                options={quiz.options}
-                correctAnswer={quiz.correctAnswer}
-                onAnswer={handleQuizAnswer}
-              />
+              <div className="space-y-4">
+                <QuizComponent
+                  question={quiz.question}
+                  options={quiz.options}
+                  correctAnswer={quiz.correctAnswer}
+                  onAnswer={handleQuizAnswer}
+                />
+                <Button 
+                  onClick={handleBackToChallenges}
+                  className="w-full"
+                  variant="outline"
+                >
+                  ← Back to Challenges
+                </Button>
+              </div>
             ) : null;
           })()}
           
@@ -211,10 +188,10 @@ const Index = () => {
             <ActionPlanInput onSubmit={handleActionPlanSubmit} />
           )}
           
-          {step === 'crr' && userType && (
+          {step === 'crr' && userType && currentChallenge && (
             <CRRReport 
               userType={userType}
-              challenge={selectedChallenges.join(', ')}
+              challenge={currentChallenge}
               actionPlan={actionPlan}
             />
           )}
