@@ -9,11 +9,13 @@ interface ChallengeSelectorProps {
 export const ChallengeSelector = ({ userType, onSelectChallenge }: ChallengeSelectorProps) => {
   const challengesData = userType === 'student' 
     ? [
-        { text: 'Insecurity in learning environment', subtitle: '(Safety concerns affecting my focus)', color: 'bg-red-500' },
-        { text: 'Lack of qualified teachers', subtitle: '(Not getting proper guidance)', color: 'bg-orange-500' },
-        { text: 'Boring teaching methods', subtitle: '(Classes feel unengaging)', color: 'bg-yellow-500' },
-        { text: 'Lack of mentorship', subtitle: '(No one to guide my path)', color: 'bg-green-500' },
-        { text: 'Other challenges', subtitle: '(Something else)', color: 'bg-blue-500' }
+        { text: 'Insecurity in Learning Environment', subtitle: '(such as bullying, terrorism, harassment, unsafe school conditions)', color: 'bg-red-500' },
+        { text: 'Lack of Qualified Teachers', subtitle: '(inexperienced teachers hired cheaply, or teachers without updated knowledge especially in STEM)', color: 'bg-orange-500' },
+        { text: 'Boring Teaching Methods', subtitle: '(clinging to traditional methods, memorization, lack of creativity)', color: 'bg-yellow-500' },
+        { text: 'Lack of Mentorship', subtitle: '(no guidance, lack of follow-up, no constructive feedback)', color: 'bg-green-500' },
+        { text: 'Lack of Understanding of My Personal Needs, Interests, Learning Style & Language', subtitle: '(teachers ignore individuality, interests, or language differences)', color: 'bg-pink-500' },
+        { text: 'Lack of Adequate Foundation and Understanding of Subject', subtitle: '(basic concepts not well taught, no one to guide my path)', color: 'bg-gray-500' },
+        { text: 'Other Challenges', subtitle: '(something else not listed above)', color: 'bg-blue-500' }
       ]
     : userType === 'teacher' 
     ? [
