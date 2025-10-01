@@ -8,10 +8,84 @@ import { CRRReport } from "@/components/CRRReport";
 
 type ConversationStep = 'userSelect' | 'challenge' | 'quiz' | 'action' | 'crr';
 
+const quizData: Record<string, { question: string; options: string[]; correctAnswer: number }> = {
+  'Insecurity in Learning Environment': {
+    question: 'What is one effective way to make learning environments safe for students?',
+    options: [
+      'A) Ignoring bullying and hoping it stops',
+      'B) Establishing anti-bullying policies and providing secure school conditions',
+      'C) Offering online/virtual learning options where students can learn safely from home',
+      'D) Creating awareness programs where students are trained on safety and respect'
+    ],
+    correctAnswer: 2
+  },
+  'Lack of Qualified Teachers': {
+    question: 'Why is it important for teachers to have updated knowledge, especially in STEM areas?',
+    options: [
+      'A) So they can pass exams easily',
+      'B) To inspire students with relevant and modern skills',
+      'C) To avoid giving homework',
+      'D) To reduce the cost of teaching'
+    ],
+    correctAnswer: 1
+  },
+  'Boring Teaching Methods': {
+    question: 'Which of these makes learning more engaging than traditional rote memorization?',
+    options: [
+      'A) Group projects and discussions',
+      'B) Only repeating notes',
+      'C) Punishment and strict silence',
+      'D) Copying textbooks word-for-word'
+    ],
+    correctAnswer: 0
+  },
+  'Lack of Mentorship': {
+    question: 'What is one key role of a mentor in learning?',
+    options: [
+      'A) To give constructive feedback and guidance',
+      'B) To force students to memorize',
+      'C) To replace parents',
+      'D) To give out punishments'
+    ],
+    correctAnswer: 0
+  },
+  'Lack of Understanding of My Personal Needs, Interests, Learning Style & Language': {
+    question: 'Why is it important for teachers to understand different learning styles and student interests?',
+    options: [
+      'A) So all students feel supported and can learn effectively',
+      'B) So teachers don\'t have to work hard',
+      'C) To make students all learn in the same way',
+      'D) To reduce study hours'
+    ],
+    correctAnswer: 0
+  },
+  'Lack of Adequate Foundation and Understanding of Subject': {
+    question: 'If a student misses the basics of a subject, what is the best step forward?',
+    options: [
+      'A) Ignore it and move on',
+      'B) Go back to review the foundation with help',
+      'C) Drop the subject completely',
+      'D) Only cram for exams'
+    ],
+    correctAnswer: 1
+  },
+  'Other Challenges': {
+    question: 'Why is it important for learners to express other challenges not listed?',
+    options: [
+      'A) Because every student\'s learning journey is unique',
+      'B) To waste time',
+      'C) To avoid responsibility',
+      'D) To confuse teachers'
+    ],
+    correctAnswer: 0
+  }
+};
+
 const Index = () => {
   const [step, setStep] = useState<ConversationStep>('userSelect');
   const [userType, setUserType] = useState<'student' | 'teacher' | 'parent' | null>(null);
-  const [selectedChallenge, setSelectedChallenge] = useState<string>('');
+  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0);
   const [actionPlan, setActionPlan] = useState<string>('');
   const [messages, setMessages] = useState<Array<{content: string, isBot: boolean, type?: string}>>([]);
 
@@ -26,24 +100,38 @@ const Index = () => {
     setStep('challenge');
   };
 
-  const handleChallengeSelect = (challenge: string) => {
-    setSelectedChallenge(challenge);
+  const handleChallengesConfirm = (challenges: string[]) => {
+    setSelectedChallenges(challenges);
     setMessages(prev => [...prev, 
-      { content: `I selected: ${challenge}`, isBot: false },
+      { content: `I selected: ${challenges.join(', ')}`, isBot: false },
     ]);
     setTimeout(() => {
+      setCurrentQuizIndex(0);
       setStep('quiz');
     }, 1000);
   };
 
   const handleQuizAnswer = (isCorrect: boolean) => {
+    const isSDGQuiz = currentQuizIndex === selectedChallenges.length;
+    
     const response = isCorrect 
-      ? "✅ Correct! SDG 4 is about education, while healthcare belongs to SDG 3.\n\n💡 My mindset: Education is not only about schools, but about systems that connect safety, mentorship, and lifelong growth."
-      : "That's not quite right, but learning is a process! SDG 4 focuses on quality education. Let's continue exploring how education connects to safety, mentorship, and lifelong growth.";
+      ? isSDGQuiz 
+        ? "✅ Correct! SDG 4 is about education, while healthcare belongs to SDG 3.\n\n💡 My mindset: Education is not only about schools, but about systems that connect safety, mentorship, and lifelong growth."
+        : "✅ Correct! Well done!"
+      : isSDGQuiz
+        ? "That's not quite right, but learning is a process! SDG 4 focuses on quality education. Let's continue exploring how education connects to safety, mentorship, and lifelong growth."
+        : "❌ That's not quite right, but great effort!";
     
     setMessages(prev => [...prev, { content: response, isBot: true }]);
+    
     setTimeout(() => {
-      setStep('action');
+      if (currentQuizIndex < selectedChallenges.length) {
+        // Move to next challenge quiz
+        setCurrentQuizIndex(prev => prev + 1);
+      } else {
+        // All quizzes done, move to action plan
+        setStep('action');
+      }
     }, 2000);
   };
 
@@ -83,23 +171,41 @@ const Index = () => {
           {step === 'challenge' && userType && (
             <ChallengeSelector 
               userType={userType} 
-              onSelectChallenge={handleChallengeSelect} 
+              onConfirm={handleChallengesConfirm} 
             />
           )}
           
-          {step === 'quiz' && (
-            <QuizComponent
-              question="SDG 4 is about education. Which of these is NOT part of SDG 4?"
-              options={[
-                "A) Safe schools",
-                "B) Quality teachers", 
-                "C) Affordable healthcare",
-                "D) Lifelong learning"
-              ]}
-              correctAnswer={2}
-              onAnswer={handleQuizAnswer}
-            />
-          )}
+          {step === 'quiz' && (() => {
+            const isSDGQuiz = currentQuizIndex === selectedChallenges.length;
+            
+            if (isSDGQuiz) {
+              return (
+                <QuizComponent
+                  question="SDG 4 is about education. Which of these is NOT part of SDG 4?"
+                  options={[
+                    "A) Safe schools",
+                    "B) Quality teachers", 
+                    "C) Affordable healthcare",
+                    "D) Lifelong learning"
+                  ]}
+                  correctAnswer={2}
+                  onAnswer={handleQuizAnswer}
+                />
+              );
+            }
+            
+            const currentChallenge = selectedChallenges[currentQuizIndex];
+            const quiz = quizData[currentChallenge];
+            
+            return quiz ? (
+              <QuizComponent
+                question={quiz.question}
+                options={quiz.options}
+                correctAnswer={quiz.correctAnswer}
+                onAnswer={handleQuizAnswer}
+              />
+            ) : null;
+          })()}
           
           {step === 'action' && (
             <ActionPlanInput onSubmit={handleActionPlanSubmit} />
@@ -108,7 +214,7 @@ const Index = () => {
           {step === 'crr' && userType && (
             <CRRReport 
               userType={userType}
-              challenge={selectedChallenge}
+              challenge={selectedChallenges.join(', ')}
               actionPlan={actionPlan}
             />
           )}

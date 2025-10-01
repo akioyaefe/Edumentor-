@@ -1,12 +1,14 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface ChallengeSelectorProps {
   userType: 'student' | 'teacher' | 'parent';
-  onSelectChallenge: (challenge: string) => void;
+  onConfirm: (challenges: string[]) => void;
 }
 
-export const ChallengeSelector = ({ userType, onSelectChallenge }: ChallengeSelectorProps) => {
+export const ChallengeSelector = ({ userType, onConfirm }: ChallengeSelectorProps) => {
+  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
   const challengesData = userType === 'student' 
     ? [
         { text: 'Insecurity in Learning Environment', subtitle: '(such as bullying, terrorism, harassment, unsafe school conditions)', color: 'bg-red-500' },
@@ -33,22 +35,46 @@ export const ChallengeSelector = ({ userType, onSelectChallenge }: ChallengeSele
         { text: 'Other challenges', subtitle: '(Something else)', color: 'bg-blue-500' }
       ];
 
+  const toggleChallenge = (challengeText: string) => {
+    setSelectedChallenges(prev => 
+      prev.includes(challengeText)
+        ? prev.filter(c => c !== challengeText)
+        : [...prev, challengeText]
+    );
+  };
+
   return (
     <div className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
-        {challengesData.map((challenge, index) => (
-          <Card
-            key={index}
-            onClick={() => onSelectChallenge(challenge.text)}
-            className={`${challenge.color} hover:opacity-90 transition-all cursor-pointer p-6 text-white hover:scale-105 shadow-lg`}
-          >
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold">{challenge.text}</h3>
-              <p className="text-sm opacity-90">{challenge.subtitle}</p>
-            </div>
-          </Card>
-        ))}
+        {challengesData.map((challenge, index) => {
+          const isSelected = selectedChallenges.includes(challenge.text);
+          return (
+            <Card
+              key={index}
+              onClick={() => toggleChallenge(challenge.text)}
+              className={`${challenge.color} hover:opacity-90 transition-all cursor-pointer p-6 text-white hover:scale-105 shadow-lg ${
+                isSelected ? 'ring-4 ring-white' : ''
+              }`}
+            >
+              <div className="space-y-2">
+                <div className="flex items-start justify-between">
+                  <h3 className="text-xl font-bold flex-1">{challenge.text}</h3>
+                  {isSelected && <span className="text-2xl">✓</span>}
+                </div>
+                <p className="text-sm opacity-90">{challenge.subtitle}</p>
+              </div>
+            </Card>
+          );
+        })}
       </div>
+      {selectedChallenges.length > 0 && (
+        <Button 
+          onClick={() => onConfirm(selectedChallenges)}
+          className="w-full bg-education-primary text-white hover:bg-education-primary/90 text-lg py-6"
+        >
+          Continue to Quiz ({selectedChallenges.length} challenge{selectedChallenges.length > 1 ? 's' : ''} selected)
+        </Button>
+      )}
     </div>
   );
 };
